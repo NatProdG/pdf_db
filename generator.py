@@ -66,7 +66,7 @@ def get_quantity():
 
 def get_company():
     fake = Faker()
-    return fake.company()
+    return str(fake.company_suffix() + " " + fake.company())
 
 
 def get_date():
@@ -75,14 +75,12 @@ def get_date():
 
 
 def get_address():
-    fake = Faker()
-    Faker.seed(random.randint(0, 9999))
+    fake = Faker('fr_FR')
     return fake.address()
 
 
 def get_name():
-    fake = Faker()
-    Faker.seed(random.randint(0, 9999))
+    fake = Faker('fr_FR')
     return fake.name()
 
 
