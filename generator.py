@@ -9,9 +9,10 @@ prices = []
 quantities = []
 date = ''
 total = 0
+school = ''
 
 def main():
-    template_file_path = 'templates/test2.docx'
+    template_file_path = 'templates/diplome.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -25,7 +26,8 @@ def main():
         "${QUANTITY}": get_quantity,
         "${INTER}": get_inter,
         "${TOTAL}": get_total,
-        "${COMPANY}": get_company
+        "${COMPANY}": get_company,
+        "${SCHOOL}": get_school
     }
 
     for j in range(0, 20):
@@ -68,6 +70,16 @@ def get_prix():
 
 def get_item():
     return random.choice(list(open('construction.txt')))
+
+def get_school():
+    global school
+    if school != '':
+        temp = school
+        school = ''
+        return temp
+    else:
+        school = random.choice(list(open('ecole.txt')))
+        return school
 
 
 def get_quantity():
