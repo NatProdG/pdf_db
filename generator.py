@@ -1,17 +1,25 @@
 from docx import Document
+from docx2pdf import convert
 from faker import Faker
 import datetime
 import time
 import random
 import os
 
+address = ""
 prices = []
 quantities = []
 date = ''
 total = 0
+taux = 0
+heures = 0
+heures_supp = 0
+sal_brut = 0
+charges = 0
+
 
 def main():
-    template_file_path = 'templates/test2.docx'
+    template_file_path = 'templates/modele_bulletin_de_paie.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -20,12 +28,22 @@ def main():
         "${START_DATE}": get_start_date,
         "${END_DATE}": get_end_date,
         "${ADDRESS}": get_address,
+        "${CITY_ADDRESS}": get_city_address,
+        "${JOB}" : get_job,
         "${PRIX}": get_prix,
         "${ITEM}": get_item,
         "${QUANTITY}": get_quantity,
         "${INTER}": get_inter,
         "${TOTAL}": get_total,
-        "${COMPANY}": get_company
+        "${COMPANY}": get_company,
+        "${HEURES}": get_heures,
+        "${HEURES_SUPP}": get_heures_supp,
+        "${TAUX}": get_taux_horaire,
+        "${SAL_HEURES}": get_sal_heures,
+        "${SAL_HEURES_SUPP}": get_sal_heures_supp,
+        "${SALAIRE_BRUT}": get_brut_salary,
+        "${CHARGES}": get_social_charge,
+        "${SALAIRE_NET}": get_net_salary
     }
 
     for j in range(0, 20):
@@ -71,7 +89,7 @@ def get_item():
 
 
 def get_quantity():
-    q = random.choice([1,2,5,10,15,20,25])
+    q = random.choice([1, 2, 5, 10, 15, 20, 25])
     global quantities
     quantities.append(q)
     return str(q)
@@ -80,6 +98,11 @@ def get_quantity():
 def get_company():
     fake = Faker()
     return fake.company()
+
+
+def get_job():
+    fake = Faker('fr_FR')
+    return fake.job()
 
 
 def get_start_date():
@@ -92,14 +115,23 @@ def get_start_date():
 
 def get_end_date():
     global date
-    delta = datetime.timedelta(days=random.randint(5,90))
+    delta = datetime.timedelta(days=random.randint(5, 90))
     end_date = date + delta
     return str(end_date)
 
 
 def get_address():
+    global address
     fake = Faker('fr_FR')
-    return fake.address()
+    add = fake.address()
+    address = add
+    return add
+
+
+def get_city_address():
+    global address
+    c = address.split(' ')[-1]
+    return c
 
 
 def get_name():
@@ -121,6 +153,64 @@ def get_total():
     res = total
     total = 0
     return str(res)
+
+
+def get_heures():
+    global heures
+    h = random.randint(120, 200)
+    heures = h
+    return str(h)
+
+
+def get_heures_supp():
+    global heures_supp
+    h = random.choice([0, 0, 0, 0, 0, 5, 10])
+    heures_supp = h
+    return str(h)
+
+
+def get_taux_horaire():
+    global taux
+    t = round(random.uniform(10.03, 15.0),2)
+    taux = t
+    return str(t)
+
+
+def get_sal_heures():
+    global heures
+    global taux
+    return str(heures*taux)
+
+
+def get_sal_heures_supp():
+    global heures_supp
+    global taux
+    return str(heures_supp*(taux*1.25))
+
+
+def get_brut_salary():
+    global sal_brut
+    global heures
+    global heures_supp
+    global taux
+    s = round((heures * taux + heures_supp * (taux * 1.25)),2)
+    sal_brut = s
+    return str(s)
+
+
+def get_social_charge():
+    global sal_brut
+    global charges
+    c = round(sal_brut * 0.22, 2)
+    charges = c
+    return str(c)
+
+
+def get_net_salary():
+    global sal_brut
+    global charges
+    s = round(sal_brut - charges,2)
+    return str(s)
 
 
 if __name__ == '__main__':
