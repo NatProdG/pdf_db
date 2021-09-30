@@ -3,7 +3,7 @@ from docx2pdf import convert
 from faker import Faker
 import datetime
 import time
-import random
+import random, string
 import os
 
 address = ""
@@ -20,10 +20,11 @@ total_frais = 0
 school = ''
 nom_fam = ''
 prenom = ''
+date_covid = ''
 
 
 def main():
-    template_file_path = 'templates/Note-de-frais.docx'
+    template_file_path = 'templates/pcr.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -59,10 +60,16 @@ def main():
         "${SALAIRE_BRUT}": get_brut_salary,
         "${CHARGES}": get_social_charge,
         "${SALAIRE_NET}": get_net_salary,
-        "${SCHOOL}": get_school
+        "${SCHOOL}": get_school,
+        "${ID_DOSS}": get_id_doss,
+        "${DATE_COVID}": get_date_covid,
+        "${ID_INTERNET}": get_id_internet
     }
 
     for j in range(0, 20):
+        global date_covid
+        date_covid = ''
+
         template_document = Document(template_file_path)
 
         for variable_key, variable_value in variables.items():
@@ -74,7 +81,8 @@ def main():
                     for cell in col.cells:
                         for paragraph in cell.paragraphs:
                             replace_text_in_paragraph(paragraph, variable_key, variable_value)
-        template_document.save(output_file_path + template_file_path.split('/')[1].split('.')[0] + str(time.time()) + ".docx")
+        template_document.save(
+            output_file_path + template_file_path.split('/')[1].split('.')[0] + str(time.time()) + ".docx")
 
 
 def replace_text_in_paragraph(paragraph, key, value):
@@ -84,6 +92,28 @@ def replace_text_in_paragraph(paragraph, key, value):
         for item in inline:
             if key in item.text:
                 item.text = item.text.replace(key, value())
+
+
+def get_id_doss():
+    res = ""
+    for _ in range(0, 10):
+        res += str(random.choice(string.ascii_uppercase + string.digits))
+    return res
+
+
+def get_date_covid():
+    global date_covid
+    fake = Faker()
+    if date_covid == '':
+        date_covid = fake.date_between('-1y')
+    return str(date_covid)
+
+
+def get_id_internet():
+    res = "P-000"
+    for _ in range(0, 6):
+        res += str(random.randint(0, 9))
+    return str(res)
 
 
 def get_total_frais():
