@@ -17,20 +17,30 @@ heures_supp = 0
 sal_brut = 0
 charges = 0
 school = ''
+nom_fam = ''
+prenom = ''
 
 
 def main():
-    template_file_path = 'templates/diplome.docx'
+    template_file_path = 'templates/casier.docx'
     output_file_path = 'output/'
 
     variables = {
         "${EMPLOEE_NAME}": get_name,
         "${EMPLOEE_PHONE}": get_phone_number,
+        "${NOM_FAM}": get_nom_fam,
+        "${PRENOM}": get_prenom,
+        "${HEURE_DELIV}": get_heure_deliv,
+        "${ID_DOC}": get_id_doc,
+        "${CLE_CONTROL}": get_cle_control,
+        "${SEXE}": get_sexe,
+        "${DATE_NAISS}": get_date_naiss,
+        "${VILLE_NAISS}": get_ville_naiss,
         "${START_DATE}": get_start_date,
         "${END_DATE}": get_end_date,
         "${ADDRESS}": get_address,
         "${CITY_ADDRESS}": get_city_address,
-        "${JOB}" : get_job,
+        "${JOB}": get_job,
         "${PRIX}": get_prix,
         "${ITEM}": get_item,
         "${QUANTITY}": get_quantity,
@@ -72,6 +82,63 @@ def replace_text_in_paragraph(paragraph, key, value):
                 item.text = item.text.replace(key, value())
 
 
+def get_sexe():
+    return random.choice(["Masculin", "Féminin"])
+
+
+def get_heure_deliv():
+    fake = Faker()
+    return str(fake.time())
+
+
+def get_date_naiss():
+    fake = Faker()
+    return str(fake.date_between('-60y', '-20y'))
+
+
+def get_ville_naiss():
+    fake = Faker('fr_FR')
+    return fake.city()
+
+
+def get_id_doc():
+    res = ''
+    for _ in range(0, 13):
+        res += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
+    return res
+
+
+def get_cle_control():
+    res = ''
+    for _ in range(0, 8):
+        res += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
+    return res
+
+
+def get_nom_fam():
+    global nom_fam
+    fake = Faker('fr_FR')
+    if nom_fam != '':
+        temp = nom_fam
+        nom_fam = ''
+        return temp
+    else:
+        nom_fam = fake.last_name()
+        return nom_fam
+
+
+def get_prenom():
+    global prenom
+    fake = Faker('fr_FR')
+    if prenom != '':
+        temp = prenom
+        prenom = ''
+        return temp
+    else:
+        prenom = fake.first_name_male()
+        return prenom
+
+
 def get_phone_number():
     nb = '+33'
     for i in range(1, 10):
@@ -88,6 +155,7 @@ def get_prix():
 
 def get_item():
     return random.choice(list(open('construction.txt')))
+
 
 def get_school():
     global school
@@ -120,8 +188,13 @@ def get_job():
 def get_start_date():
     fake = Faker()
     global date
-    d = fake.date_between('-5y', 'today')
-    date = d
+    d = ''
+    if date == '':
+        d = fake.date_between('-5y', 'today')
+        date = d
+    else:
+        d = date
+        date = ''
     return str(d)
 
 
@@ -183,7 +256,7 @@ def get_heures_supp():
 
 def get_taux_horaire():
     global taux
-    t = round(random.uniform(10.03, 15.0),2)
+    t = round(random.uniform(10.03, 15.0), 2)
     taux = t
     return str(t)
 
@@ -191,13 +264,13 @@ def get_taux_horaire():
 def get_sal_heures():
     global heures
     global taux
-    return str(heures*taux)
+    return str(heures * taux)
 
 
 def get_sal_heures_supp():
     global heures_supp
     global taux
-    return str(heures_supp*(taux*1.25))
+    return str(heures_supp * (taux * 1.25))
 
 
 def get_brut_salary():
@@ -205,7 +278,7 @@ def get_brut_salary():
     global heures
     global heures_supp
     global taux
-    s = round((heures * taux + heures_supp * (taux * 1.25)),2)
+    s = round((heures * taux + heures_supp * (taux * 1.25)), 2)
     sal_brut = s
     return str(s)
 
@@ -221,7 +294,7 @@ def get_social_charge():
 def get_net_salary():
     global sal_brut
     global charges
-    s = round(sal_brut - charges,2)
+    s = round(sal_brut - charges, 2)
     return str(s)
 
 
