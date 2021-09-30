@@ -83,10 +83,18 @@ def get_company():
 
 
 def get_start_date():
+    fake = Faker()
     global date
-    d = datetime
+    d = fake.date_between('-5y', 'today')
     date = d
-    return d
+    return str(d)
+
+
+def get_end_date():
+    global date
+    delta = datetime.timedelta(days=random.randint(5,90))
+    end_date = date + delta
+    return str(end_date)
 
 
 def get_address():
