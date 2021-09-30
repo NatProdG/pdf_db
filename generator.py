@@ -1,9 +1,14 @@
 from docx import Document
 from faker import Faker
+import datetime
 import time
 import random
 import os
 
+prices = []
+quantities = []
+date = ''
+total = 0
 
 def main():
     template_file_path = 'templates/test2.docx'
@@ -12,11 +17,14 @@ def main():
     variables = {
         "${EMPLOEE_NAME}": get_name,
         "${EMPLOEE_PHONE}": get_phone_number,
-        "${START_DATE}": get_date,
+        "${START_DATE}": get_start_date,
+        "${END_DATE}": get_end_date,
         "${ADDRESS}": get_address,
         "${PRIX}": get_prix,
         "${ITEM}": get_item,
         "${QUANTITY}": get_quantity,
+        "${INTER}": get_inter,
+        "${TOTAL}": get_total,
         "${COMPANY}": get_company
     }
 
@@ -52,7 +60,9 @@ def get_phone_number():
 
 
 def get_prix():
-    price = random.randrange(10, 1000, 10)
+    price = random.randrange(10, 150, 10)
+    global prices
+    prices.append(price)
     return str(price)
 
 
@@ -61,17 +71,22 @@ def get_item():
 
 
 def get_quantity():
-    return random.choice(['1', '2', '5', '10', '15', '25', '50'])
+    q = random.choice([1,2,5,10,15,20,25])
+    global quantities
+    quantities.append(q)
+    return str(q)
 
 
 def get_company():
     fake = Faker()
-    return str(fake.company_suffix() + " " + fake.company())
+    return fake.company()
 
 
-def get_date():
-    fake = Faker()
-    return fake.date()
+def get_start_date():
+    global date
+    d = datetime
+    date = d
+    return d
 
 
 def get_address():
@@ -82,6 +97,22 @@ def get_address():
 def get_name():
     fake = Faker('fr_FR')
     return fake.name()
+
+
+def get_inter():
+    global prices
+    global quantities
+    res = prices.pop(0) * quantities.pop(0)
+    global total
+    total = total + res
+    return str(res)
+
+
+def get_total():
+    global total
+    res = total
+    total = 0
+    return str(res)
 
 
 if __name__ == '__main__':
