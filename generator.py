@@ -16,13 +16,14 @@ heures = 0
 heures_supp = 0
 sal_brut = 0
 charges = 0
+total_frais = 0
 school = ''
 nom_fam = ''
 prenom = ''
 
 
 def main():
-    template_file_path = 'templates/casier.docx'
+    template_file_path = 'templates/Note-de-frais.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -40,6 +41,9 @@ def main():
         "${END_DATE}": get_end_date,
         "${ADDRESS}": get_address,
         "${CITY_ADDRESS}": get_city_address,
+        "${CLUB}": get_club,
+        "${OBJET_REM}": get_objet_rem,
+        "${TOTAL_FRAIS}": get_total_frais,
         "${JOB}": get_job,
         "${PRIX}": get_prix,
         "${ITEM}": get_item,
@@ -70,7 +74,7 @@ def main():
                     for cell in col.cells:
                         for paragraph in cell.paragraphs:
                             replace_text_in_paragraph(paragraph, variable_key, variable_value)
-        template_document.save(output_file_path + template_file_path.split('/')[1].split('.')[0] + str(j + 1) + ".docx")
+        template_document.save(output_file_path + template_file_path.split('/')[1].split('.')[0] + str(time.time()) + ".docx")
 
 
 def replace_text_in_paragraph(paragraph, key, value):
@@ -80,6 +84,25 @@ def replace_text_in_paragraph(paragraph, key, value):
         for item in inline:
             if key in item.text:
                 item.text = item.text.replace(key, value())
+
+
+def get_total_frais():
+    global total_frais
+    if total_frais != 0:
+        temp = total_frais
+        total_frais = 0
+        return str(temp)
+    else:
+        total_frais = round(random.uniform(10.0, 100.0), 2)
+        return str(total_frais)
+
+
+def get_objet_rem():
+    return random.choice(list(open('rembours.txt')))
+
+
+def get_club():
+    return random.choice(list(open('clubs.txt')))
 
 
 def get_sexe():
