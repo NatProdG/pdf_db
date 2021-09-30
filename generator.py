@@ -16,10 +16,11 @@ heures = 0
 heures_supp = 0
 sal_brut = 0
 charges = 0
+school = ''
 
 
 def main():
-    template_file_path = 'templates/modele_bulletin_de_paie.docx'
+    template_file_path = 'templates/diplome.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -43,7 +44,8 @@ def main():
         "${SAL_HEURES_SUPP}": get_sal_heures_supp,
         "${SALAIRE_BRUT}": get_brut_salary,
         "${CHARGES}": get_social_charge,
-        "${SALAIRE_NET}": get_net_salary
+        "${SALAIRE_NET}": get_net_salary,
+        "${SCHOOL}": get_school
     }
 
     for j in range(0, 20):
@@ -86,6 +88,16 @@ def get_prix():
 
 def get_item():
     return random.choice(list(open('construction.txt')))
+
+def get_school():
+    global school
+    if school != '':
+        temp = school
+        school = ''
+        return temp
+    else:
+        school = random.choice(list(open('ecole.txt')))
+        return school
 
 
 def get_quantity():
