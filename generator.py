@@ -24,7 +24,7 @@ date_covid = ''
 
 
 def main():
-    template_file_path = 'templates/pcr.docx'
+    template_file_path = 'templates/avion.docx'
     output_file_path = 'output/'
 
     variables = {
@@ -63,10 +63,18 @@ def main():
         "${SCHOOL}": get_school,
         "${ID_DOSS}": get_id_doss,
         "${DATE_COVID}": get_date_covid,
-        "${ID_INTERNET}": get_id_internet
+        "${ID_INTERNET}": get_id_internet,
+        "${REF_BIL}": get_ref_billet,
+        "${REF_VOL}": get_ref_vol,
+        "${HEURE_D}": get_heure_d,
+        "${HEURE_A}": get_heure_a,
+        "${HEURE_D-1}": get_heure_d_1,
+        "${NUM_TICK}": get_num_ticket,
+        "${DATE_VOL}": get_date_vol,
+        "${PAYS}": get_pays,
     }
 
-    for j in range(0, 20):
+    for j in range(0, 5):
         global date_covid
         date_covid = ''
 
@@ -90,6 +98,7 @@ def replace_text_in_paragraph(paragraph, key, value):
         inline = paragraph.runs
 
         for item in inline:
+            print(item.text)
             if key in item.text:
                 item.text = item.text.replace(key, value())
 
@@ -350,6 +359,53 @@ def get_net_salary():
     s = round(sal_brut - charges, 2)
     return str(s)
 
+def get_date_vol():
+    res = ''
+    res += str(random.randint(1,31))
+    res += random.choice(['JAN','FEV','MAR','AVR','MAI','JUN','JUI','AOU','SEP','OCT','NOV','DEC'])
+    return str(res)
+
+def get_num_ticket():
+    res = ''
+    for i in range(4):
+        for j in range(3):
+            res += str(random.randint(0,9))
+        res += ' '
+    res += str(random.randint(0,9))
+    return str(res)
+
+def get_heure_d():
+    fake = Faker()
+    heure_d = fake.time('%H:%M')
+    return str(heure_d)
+
+def get_heure_d_1():
+    fake = Faker()
+    heure_d_1 = fake.time('%H:%M')
+    return str(heure_d_1)
+
+def get_heure_a():
+    fake = Faker()
+    heure_a = fake.time()
+    return str(heure_a)
+
+def get_ref_billet():
+    res = ''
+    for i in range(3):
+        res += random.choice(string.ascii_uppercase)
+    for i in range(3):
+        res += str(random.randint(0,9))
+    return str(res)
+
+def get_ref_vol():
+    res = 'AF'
+    for i in range(3):
+        res += str(random.randint(0,9))
+    return str(res)
+
+def get_pays():
+    fake = Faker('fr_FR')
+    return fake.country()
 
 if __name__ == '__main__':
     main()
