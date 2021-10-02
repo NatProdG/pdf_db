@@ -1,10 +1,13 @@
 from docx import Document
 from docx2pdf import convert
 from faker import Faker
+from progressbar import ProgressBar
+import argparse
 import datetime
 import time
 import random, string
-import os
+import os, sys
+
 
 address = ""
 prices = []
@@ -24,7 +27,27 @@ date_covid = ''
 
 
 def main():
-    template_file_path = 'templates/avion.docx'
+    pbar = ProgressBar()
+    my_parser = argparse.ArgumentParser(description='Location of the template')
+    my_parser.add_argument('Path',
+                           metavar='path',
+                           type=str,
+                           help='the path to the template')
+
+    my_parser.add_argument('Quantity',
+                           metavar='qty',
+                           type=int,
+                           help='the number of file you want')
+
+    args = my_parser.parse_args()
+    input_path = args.Path
+    qty_file = args.Quantity
+
+    if not os.path.isfile(input_path):
+        print('The template specified does not exist')
+        sys.exit()
+
+    template_file_path = input_path
     output_file_path = 'output/'
 
     variables = {
@@ -73,8 +96,8 @@ def main():
         "${DATE_VOL}": get_date_vol,
         "${PAYS}": get_pays,
     }
-
-    for j in range(0, 5):
+    pbar = ProgressBar(maxval=qty_file).start()
+    for j in range(0, qty_file):
         global date_covid
         date_covid = ''
 
@@ -91,6 +114,7 @@ def main():
                             replace_text_in_paragraph(paragraph, variable_key, variable_value)
         template_document.save(
             output_file_path + template_file_path.split('/')[1].split('.')[0] + str(time.time()) + ".docx")
+        pbar.update(j+1)
 
 
 def replace_text_in_paragraph(paragraph, key, value):
@@ -98,7 +122,6 @@ def replace_text_in_paragraph(paragraph, key, value):
         inline = paragraph.runs
 
         for item in inline:
-            print(item.text)
             if key in item.text:
                 item.text = item.text.replace(key, value())
 
