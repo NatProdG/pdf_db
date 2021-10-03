@@ -24,6 +24,9 @@ school = ''
 nom_fam = ''
 prenom = ''
 date_covid = ''
+ine = ''
+nom_bourse = ''
+prenom_bourse = ''
 
 
 def main():
@@ -95,7 +98,14 @@ def main():
         "${NUM_TICK}": get_num_ticket,
         "${DATE_VOL}": get_date_vol,
         "${PAYS}": get_pays,
+        "${INE}": get_ine,
+        "${REF_BOURSE}": get_ref_bourse,
+        "${NOM_BOURSE}": get_nom_bourse,
+        "${PRENOM_BOURSE}": get_prenom_bourse,
+        "${EMAIL}": get_email,
+
     }
+
     pbar = ProgressBar(maxval=qty_file).start()
     for j in range(0, qty_file):
         global date_covid
@@ -122,6 +132,7 @@ def replace_text_in_paragraph(paragraph, key, value):
         inline = paragraph.runs
 
         for item in inline:
+            print(item.text)
             if key in item.text:
                 item.text = item.text.replace(key, value())
 
@@ -429,6 +440,40 @@ def get_ref_vol():
 def get_pays():
     fake = Faker('fr_FR')
     return fake.country()
+
+def get_ine():
+    global ine
+    ine = ''
+    for j in range(10):
+        ine += str(random.randint(0,9))
+    ine += random.choice(string.ascii_uppercase)
+    return ine
+
+def get_ref_bourse():
+    res = ''
+    res += random.choice(['2020','2021','2019','2018','2017'])
+    res += random.choice(['REN','BDX','MAR','NAN','STR'])
+    res += ine
+    return res
+
+def get_nom_bourse():
+    global nom_bourse
+    fake = Faker('fr_FR')
+    nom_bourse = fake.last_name()
+    return nom_bourse
+
+def get_prenom_bourse():
+    global prenom_bourse
+    fake = Faker('fr_FR')
+    prenom_bourse = fake.first_name_male()
+    return prenom_bourse
+
+def get_email():
+    res = ''
+    res += nom_bourse.lower() + '.' + prenom_bourse.lower() +'@'
+    res += random.choice(['gmail.com','hotmail.fr','outlook.fr','yahoo.fr','hotmail.com'])
+    return res
+
 
 if __name__ == '__main__':
     main()
