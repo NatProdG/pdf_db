@@ -27,6 +27,7 @@ date_covid = ''
 ine = ''
 nom_bourse = ''
 prenom_bourse = ''
+date_f = ''
 
 
 def main():
@@ -65,6 +66,7 @@ def main():
         "${DATE_NAISS}": get_date_naiss,
         "${VILLE_NAISS}": get_ville_naiss,
         "${START_DATE}": get_start_date,
+        "${START_DATE_F}": get_start_date_f,
         "${END_DATE}": get_end_date,
         "${ADDRESS}": get_address,
         "${CITY_ADDRESS}": get_city_address,
@@ -292,11 +294,20 @@ def get_start_date():
         date = ''
     return str(d)
 
+def get_start_date_f():
+    fake = Faker()
+    global date_f
+    date_f = fake.date_between('-5y', 'today')
+    return str(date_f)
+
 
 def get_end_date():
-    global date
+    global date_f
+    fake = Faker()
+    if date_f == '':
+        date_f = fake.date_between('-5y', 'today')
     delta = datetime.timedelta(days=random.randint(5, 90))
-    end_date = str(date) + str(delta)
+    end_date = date_f + delta
     return str(end_date)
 
 
