@@ -105,6 +105,7 @@ def main():
         "${NOM_BOURSE}": get_nom_bourse,
         "${PRENOM_BOURSE}": get_prenom_bourse,
         "${EMAIL}": get_email,
+        "${NUM_FAC}": get_num_fac,
 
     }
 
@@ -483,6 +484,13 @@ def get_email():
     res += nom_bourse.lower() + '.' + prenom_bourse.lower() +'@'
     res += random.choice(['gmail.com','hotmail.fr','outlook.fr','yahoo.fr','hotmail.com'])
     return res
+
+def get_num_fac():
+    res = '#FAC'
+    for i in range(4):
+        res += str(random.randint(0,9))
+    return res
+
 
 
 if __name__ == '__main__':
