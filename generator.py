@@ -296,7 +296,7 @@ def get_start_date():
 def get_end_date():
     global date
     delta = datetime.timedelta(days=random.randint(5, 90))
-    end_date = date + delta
+    end_date = str(date) + str(delta)
     return str(end_date)
 
 
