@@ -132,7 +132,6 @@ def replace_text_in_paragraph(paragraph, key, value):
         inline = paragraph.runs
 
         for item in inline:
-            print(item.text)
             if key in item.text:
                 item.text = item.text.replace(key, value())
 
